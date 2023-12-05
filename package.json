@@ -1,0 +1,25 @@
+{
+  "name": "proyecto-be-hdominique",
+  "version": "1.0.0",
+  "description": "",
+  "main": "desafio_1_HDominique.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HumbertoDominique/Backend_Coderhouse.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HumbertoDominique/Backend_Coderhouse/issues"
+  },
+  "homepage": "https://github.com/HumbertoDominique/Backend_Coderhouse#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

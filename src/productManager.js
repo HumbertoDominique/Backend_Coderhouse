@@ -1,13 +1,13 @@
-const fs = require("fs");
+import fs from "fs";
 
-class ProductManager {
+export default class ProductManager {
   #id = 0;
 
   //Se crea variable this.path que recibe desde el constructor de la instancia, la ruta del archivo en el que serán almacenados los productos.
-  constructor(ruta) {
-    this.path = ruta;
-
-    fs.writeFileSync(`${this.path}`, JSON.stringify([]));
+  constructor() {
+    if (!fs.existsSync("./test.json")) {
+      fs.writeFileSync(`./test.json`, JSON.stringify([]));
+    }
   }
 
   //Método addProducts que agrega productos al arreglo.
@@ -63,7 +63,7 @@ class ProductManager {
   async getProducts() {
     try {
       const productosGuardados = await fs.promises.readFile(
-        `${this.path}`,
+        `./test.json`,
         "utf-8"
       );
       return JSON.parse(productosGuardados);
@@ -170,67 +170,95 @@ class ProductManager {
 //TESTING DEL DESAFÍO.
 
 //Se genera la instancia y se especifica la ruta de almacenamiento de los productos.
-const productManager = new ProductManager("./test.json");
 
+/*
+const productManager = new ProductManager("./test.json");
 const test = async () => {
   try {
     //Se evalúa que la instancia inicialmente sea un arreglo vacío.
-
-    console.log("Arreglo vacío: ", await productManager.getProducts());
-
     //Se evalúa que se cree producto con id autogenerado. Se mantienen validaciones en caso de ingresar códigos duplicados y que todos los campos sean obligatorios.
-
     await productManager.addProduct(
-      "producto prueba 1",
-      "Este es un producto prueba",
+      "Producto1",
+      "Descripción1",
       200,
       "Sin imagen",
       "abc123",
       25
     );
-
     await productManager.addProduct(
-      "producto prueba 2",
-      "Este es un producto prueba",
-      200,
+      "Producto2",
+      "Descripción2",
+      210,
       "Sin imagen",
       "abc124",
       25
     );
-
     await productManager.addProduct(
-      "producto prueba 3",
-      "Este es un producto prueba",
-      200,
+      "Producto3",
+      "Descripción3",
+      220,
       "Sin imagen",
       "abc125",
       25
     );
-
-    //Se evalúa que método getProducts traiga todos los productos agregados.
-    console.log("\n", await productManager.getProducts());
-
-    //Se evalúa que método getProductsById arroje el producto con el id seleccionado o indique error en caso de no existir producto con ese id.
-    await productManager.getProductsById(3);
-
-    //Se evalúa que método updateProducts modifique las propiedades de los productos seleccionados por su id o indique error en caso de no existir producto con ese id.
-    await productManager.updateProduct(1, {
-      title: "SE MODIFICÓ",
-      description: "SE MODIFICÓ",
-      price: "SE MODIFICÓ",
-    });
-
-    await productManager.updateProduct(2, {
-      thumbnail: "SE MODIFICÓ",
-      stock: "SE MODIFICÓ",
-      code: "SE MODIFICÓ",
-    });
-
-    //Se evalúa que método deleteProduct elimine del arreglo el producto seleccionado por su id o indique error en caso de no existir producto con ese id.
-    await productManager.deleteProduct(1);
+    await productManager.addProduct(
+      "Producto4",
+      "Descripción4",
+      230,
+      "Sin imagen",
+      "abc126",
+      25
+    );
+    await productManager.addProduct(
+      "Producto5",
+      "Descripción5",
+      240,
+      "Sin imagen",
+      "abc127",
+      25
+    );
+    await productManager.addProduct(
+      "Producto6",
+      "Descripción6",
+      250,
+      "Sin imagen",
+      "abc128",
+      25
+    );
+    await productManager.addProduct(
+      "Producto7",
+      "Descripción7",
+      260,
+      "Sin imagen",
+      "abc129",
+      25
+    );
+    await productManager.addProduct(
+      "Producto8",
+      "Descripción8",
+      270,
+      "Sin imagen",
+      "abc130",
+      25
+    );
+    await productManager.addProduct(
+      "Producto9",
+      "Descripción9",
+      280,
+      "Sin imagen",
+      "abc131",
+      25
+    );
+    await productManager.addProduct(
+      "Producto10",
+      "Descripción10",
+      290,
+      "Sin imagen",
+      "abc132",
+      25
+    );
   } catch (err) {
     console.log("Error durante la ejecución del Test");
   }
 };
-
-test();
+test();*/
