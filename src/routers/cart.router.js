@@ -88,13 +88,49 @@ cartRouter.post("/:cid/products/:pid", async (req, res) => {
   }
 });
 
+cartRouter.put("/:cid", async (req, res) => {
+  const cid = req.params.cid;
+  try {
+    await cartService.updateCart(cid, req.body);
+    res.status(203).send({
+      status: "success",
+      message: "Carrito modificado",
+      carrito: cid,
+    });
+  } catch (err) {
+    res.status(500).send({
+      status: "error",
+      message: "Error en cartRouter - Update Cart",
+    });
+  }
+});
+
+cartRouter.put("/:cid/products/:pid", async (req, res) => {
+  let cid = req.params.cid;
+  let pid = req.params.pid;
+  let { quantity } = req.body;
+  try {
+    await cartService.updateQuantityInCartProduct(cid, pid, quantity);
+    res.status(200).send({
+      status: "success",
+      message: "Producto actualizado en el carrito",
+      carrito: cid,
+    });
+  } catch (err) {
+    res.status(500).send({
+      status: "error",
+      message: "Error en CartRouter - Update Cart By Id",
+    });
+  }
+});
+
 cartRouter.delete("/:cid", async (req, res) => {
   const cid = req.params.cid;
   try {
     await cartService.deleteCartById(cid);
     res.status(200).send({
       status: "success",
-      message: "Carrito Eliminado",
+      message: "Productos eliminados del carrito",
       carrito: cid,
     });
   } catch (err) {
@@ -104,4 +140,23 @@ cartRouter.delete("/:cid", async (req, res) => {
     });
   }
 });
+
+cartRouter.delete("/:cid/products/:pid", async (req, res) => {
+  let cid = req.params.cid;
+  let pid = req.params.pid;
+  try {
+    await cartService.deleteProductInCart(cid, pid);
+    res.status(200).send({
+      status: "success",
+      message: "Producto Eliminado del carrito",
+      carrito: cid,
+    });
+  } catch (err) {
+    res.status(500).send({
+      status: "error",
+      message: "Error en CartRouter - Delete Product In Cart By Id",
+    });
+  }
+});
+
 export { cartRouter };

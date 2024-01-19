@@ -1,0 +1,41 @@
+<div class="d-flex justify-content-center w-100 flex-wrap mt-2 w-100">
+{{#each data}}
+    <div class="text-center w-100 bg-danger p-3 text-white mb-5">
+        <h1 class="fs-1">Artículos agregados en este carrito</h1>
+        <p>Carrito ID: {{this._id}}</p>
+    </div>
+    <div class="d-flex justify-content-center align-items-center mt-1 flex-wrap w-100">
+        {{#each products}}
+            {{#with product}}
+                <div class="card rounded-top-5 m-3" style="width: 18rem;">
+                    <div class="card-body text-center bg-warning rounded-top-5">
+                    <h5 class="card-title">{{title}}</h5>
+                    <p class="card-text">{{description}}</p>
+                    {{#each thumbnails}}
+                    <div><img src={{this.img}} alt="imagen_producto" width="30px" height="30px"></div>
+                    {{/each}}
+                    </div>
+                    <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Precio: {{price}}</li>
+                    <li class="list-group-item">Categoría: {{category}}</li>
+            {{/with}}
+                    <li class="list-group-item">Cantidad: {{this.quantity}}</li>
+                    </ul>
+                </div>
+        {{/each}}
+    </div>
+{{/each}}
+{{#if render}}
+    <div class="w-100 d-flex justify-content-center align-items-center flex-wrap" style="width: 18rem;">
+        <div class="w-75 d-flex justify-content-center align-items-center">
+            <img src="https://res.cloudinary.com/dkrenmz5w/image/upload/v1686520791/market_rgvenn.png" class="card-img-top w-25" alt="imagen_de_carrito_vacio">
+        </div>
+        <div class="card-body w-75 d-flex justify-content-center align-items-center mt-5">
+            <h5 class="card-title fs-2">NO HAS AGREGADO NINGUN PRODUCTO A ESTE CARRITO</h5>
+        </div>
+    </div>
+{{/if}}
+<form action="/products" method="get">
+    <button class="btn btn-primary">Volver a Productos</button>
+</form>
+</div>

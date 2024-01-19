@@ -1,0 +1,25 @@
+<div class="d-flex justify-content-evenly align-items-top mt-2 flex-wrap">
+  <div class="text-center w-100 bg-danger">
+    <h1 class="text-white">Carritos Disponibles</h1>
+    <p class="text-white">Vista preliminar</p>
+  </div>
+  {{#each data}}
+    <div class="card mt-5" style="width: 18rem;">
+      <div class="card-header text-center bg-secondary text-white">
+        Carrito
+        <p>id: {{this._id}}</p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-center"><b>Productos</b></li>
+        {{#each products}}
+          <div class="border border-secondary m-1 rounded bg-warning">
+            {{#with product}}
+              <p class="m-1">Producto: {{title}}</p>
+            {{/with}}
+            <p class="m-1">Cantidad: {{this.quantity}}</p>
+          </div>
+        {{/each}}
+      </ul>
+    </div>
+  {{/each}}
+</div>

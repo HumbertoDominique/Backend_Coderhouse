@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center align-items-top mt-2 flex-wrap">
+	<h1 class="text-center text-white w-100 bg-danger mb-3 p-2">Productos</h1>
+	<div class="bg-warning w-100 d-flex justify-content-center align-items-center p-2">
+		<p>Actualmente te encuentras en este carrito:</p>
+		<p class="bg-light ms-3 rounded p-2">ID 647ff31284f0722334ca9079</p>
+	</div>
+{{#each docs}}
+	<div class="card col-4 m-3 p-3" style="width: 18rem;">
+		{{#each thumbnails}}
+			<div class="d-flex justify-content-center align-items-center border rounded">
+				<img src={{this.img}} alt="thumbnail" width="100px" height="100px">
+			</div>
+		{{/each}}
+	<div class="card-body">
+		<h5 class="card-title text-center">{{this.title}}</h5>
+		<p class="card-text text-center">{{this.description}}</p>
+	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item"><b>Código:</b> {{this.code}}</li>
+		<p class="ps-3 pt-2 mb-1"><b>ID Producto:</b></p>
+		<li class="list-group-item idProd">{{this._id}}</li>
+		<li class="list-group-item"><b>Precio:</b> {{this.price}}</li>
+		<li class="list-group-item"><b>Stock:</b> {{this.stock}}</li>
+		<li class="list-group-item"><b>Categoría:</b> {{this.category}}</li>
+	</ul>
+	<div class="card-body text-center">
+		<div class="dropdown">
+			<form action="/api/carts/647ff31284f0722334ca9079/products/{{this._id}}" method="post">
+				<button type="submit" class="btn btn-primary addButton">Agregar al carrito</button>
+			</form>
+		</div>
+	</div>
+</div>
+{{/each}}
+	<div class="col-12 text-center d-flex justify-content-center mt-3">
+		<nav>
+			<ul class="pagination">
+				{{#if hasPrevPage}} <li class="page-item"> {{else}}<li class="page-item disabled">{{/if}}
+				<a class="page-link" href="?limit={{limit}}&page={{prevPage}}&category={{category}}&sort={{sort}}&availability={{availability}}">Previous</a>
+				</li>
+				<li class="page-item active" aria-current="page">
+				<a class="page-link" href="#">{{ page }}</a>
+				</li>
+				{{#if hasNextPage}} <li class="page-item"> {{else}}<li class="page-item disabled">{{/if}}
+				<a class="page-link" href="?limit={{limit}}&page={{nextPage}}&category={{category}}&sort={{sort}}&availability={{availability}}">Next</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</div>

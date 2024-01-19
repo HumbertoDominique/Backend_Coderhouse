@@ -5,16 +5,29 @@ const productsRouter = Router();
 
 productsRouter.get("/", async (req, res) => {
   try {
-    let products = await productService.getProducts();
-    let limit = req.query.limit;
+    const { limit, page, sort, category, availability } = req.query;
 
-    if (!limit) return res.send(products);
-    let productSplice = products.splice(limit);
+    let products = await productService.getProducts(
+      limit,
+      page,
+      sort,
+      category,
+      availability
+    );
+
+    products.hasPrevPage
+      ? (products.prevLink =
+          "?limit={{limit}}&page={{prevPage}}&category={{category}}&sort={{sort}}&availability={{availability}}")
+      : (products.prevLink = "null");
+
+    products.hasNextPage
+      ? (products.nextLink =
+          "?limit={{limit}}&page={{nextPage}}&category={{category}}&sort={{sort}}&availability={{availability}}")
+      : (products.nextLink = "null");
 
     res.send({
       status: "success",
-      message: "Get Products",
-      products,
+      payload: products,
     });
   } catch (err) {
     res.status(500).send({
@@ -49,11 +62,12 @@ productsRouter.get("/:pid", async (req, res) => {
 
 productsRouter.post("/", async (req, res) => {
   try {
-    const product = await productService.addProduct(req.body);
+    const { thumbnail, ...product } = req.body;
+    const productBody = await productService.addProduct(product, thumbnail);
     res.status(201).send({
       status: "success",
       message: "Nuevo Producto generado",
-      product,
+      productBody,
     });
   } catch (err) {
     res.status(500).send({
@@ -66,11 +80,17 @@ productsRouter.post("/", async (req, res) => {
 productsRouter.put("/:pid", async (req, res) => {
   const pid = req.params.pid;
   try {
-    const product = await productService.updateProduct(pid, req.body);
+    const { thumbnail, ...product } = req.body;
+    let [productBody] = await productService.updateProduct(pid, product);
+
+    if (thumbnail) {
+      productBody.thumbnails.push({ img: thumbnail });
+    }
+    productBody.save();
     res.status(203).send({
       status: "success",
       message: "Producto modificado",
-      producto: pid,
+      productBody,
     });
   } catch (err) {
     res.status(500).send({
@@ -96,4 +116,5 @@ productsRouter.delete("/:pid", async (req, res) => {
     });
   }
 });
+
 export { productsRouter };
