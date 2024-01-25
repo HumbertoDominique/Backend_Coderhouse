@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center align-items-top mt-2 flex-wrap">
-	<h1 class="text-center text-white w-100 bg-danger mb-3 p-2">Productos</h1>
-	<div class="bg-warning w-100 d-flex justify-content-center align-items-center p-2">
+	<h1 class="text-center text-white w-100 colorUno mb-3 p-2">Productos</h1>
+	<div class="colorDos w-100 d-flex justify-content-center align-items-center p-2">
 		<p>Actualmente te encuentras en este carrito:</p>
 		<p class="bg-light ms-3 rounded p-2">ID 647ff31284f0722334ca9079</p>
 	</div>
@@ -35,14 +35,14 @@
 	<div class="col-12 text-center d-flex justify-content-center mt-3">
 		<nav>
 			<ul class="pagination">
-				{{#if hasPrevPage}} <li class="page-item"> {{else}}<li class="page-item disabled">{{/if}}
-				<a class="page-link" href="?limit={{limit}}&page={{prevPage}}&category={{category}}&sort={{sort}}&availability={{availability}}">Previous</a>
+				{{#if data.hasPrevPage}} <li class="page-item"> {{else}}<li class="page-item disabled">{{/if}}
+				<a class="page-link" href="?limit={{data.limit}}&page={{data.prevPage}}&category={{data.category}}&sort={{data.sort}}&availability={{data.availability}}">Previous</a>
 				</li>
 				<li class="page-item active" aria-current="page">
-				<a class="page-link" href="#">{{ page }}</a>
+				<a class="page-link" href="#">{{ data.page }}</a>
 				</li>
-				{{#if hasNextPage}} <li class="page-item"> {{else}}<li class="page-item disabled">{{/if}}
-				<a class="page-link" href="?limit={{limit}}&page={{nextPage}}&category={{category}}&sort={{sort}}&availability={{availability}}">Next</a>
+				{{#if data.hasNextPage}} <li class="page-item"> {{else}}<li class="page-item disabled">{{/if}}
+				<a class="page-link" href="?limit={{data.limit}}&page={{data.nextPage}}&category={{data.category}}&sort={{data.sort}}&availability={{data.availability}}">Next</a>
 				</li>
 			</ul>
 		</nav>

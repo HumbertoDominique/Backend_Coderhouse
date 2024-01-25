@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { productService } from "../dao/service/productsDao.js";
+import { isUpdate } from "../middleware/realTimeProducts.middleware.js";
 
 const productsRouter = Router();
 
-productsRouter.get("/", async (req, res) => {
+productsRouter.get("/", isUpdate, async (req, res) => {
   try {
     const { limit, page, sort, category, availability } = req.query;
 
@@ -37,7 +38,7 @@ productsRouter.get("/", async (req, res) => {
   }
 });
 
-productsRouter.get("/:pid", async (req, res) => {
+productsRouter.get("/:pid", isUpdate, async (req, res) => {
   try {
     let pid = req.params.pid;
     let product = await productService.getProductById(pid);
@@ -60,7 +61,7 @@ productsRouter.get("/:pid", async (req, res) => {
   }
 });
 
-productsRouter.post("/", async (req, res) => {
+productsRouter.post("/", isUpdate, async (req, res) => {
   try {
     const { thumbnail, ...product } = req.body;
     const productBody = await productService.addProduct(product, thumbnail);
@@ -77,7 +78,7 @@ productsRouter.post("/", async (req, res) => {
   }
 });
 
-productsRouter.put("/:pid", async (req, res) => {
+productsRouter.put("/:pid", isUpdate, async (req, res) => {
   const pid = req.params.pid;
   try {
     const { thumbnail, ...product } = req.body;
@@ -100,7 +101,7 @@ productsRouter.put("/:pid", async (req, res) => {
   }
 });
 
-productsRouter.delete("/:pid", async (req, res) => {
+productsRouter.delete("/:pid", isUpdate, async (req, res) => {
   const pid = req.params.pid;
   try {
     await productService.deleteProduct(pid);

@@ -36,7 +36,7 @@ class ProductService {
       lean: true,
       limit,
       page,
-      sort: { price: sort },
+      sort: { price: sort || 1 },
     });
   }
 

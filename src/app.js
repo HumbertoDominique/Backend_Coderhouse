@@ -4,10 +4,15 @@ import handlebars from "express-handlebars";
 import { productsRouter } from "./routers/products.router.js";
 import { cartRouter } from "./routers/cart.router.js";
 import { viewsRouter } from "./routers/views.router.js";
+import { userRouter } from "./routers/user.router.js";
 import ProductManager from "./dao/serviceFileSystem/productServiceFS.js";
 import { messageService } from "./dao/service/messagesDao.js";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import { productService } from "./dao/service/productsDao.js";
 
 //SET EXPRESS.
 
@@ -39,35 +44,54 @@ export const io = new Server(webServer);
 io.on("connection", async (socket) => {
   console.log("Conexión con WebSockets");
 
+  //CONEXIÓN CON REAL TIME PRODUCTS
+  socket.emit("link", "link");
+
+  socket.on("request", async (data) => {
+    let products = await productService.getProducts();
+    let { docs } = products;
+    io.emit("products", docs);
+  });
+
   //CONEXIÓN CON CHAT
 
   const messages = await messageService.getMessages();
-  socket.emit("messages", messages);
+  io.emit("messages", messages);
 
   socket.on("message", async (message) => {
     await messageService.addMessage(message);
+    let messages = await messageService.getMessages();
+    io.emit("messages", messages);
   });
 
   socket.on("greetings", (data) => {
     socket.broadcast.emit("connected", data);
   });
-
-  //CONEXIÓN CON REAL TIME PRODUCTS
-  socket.emit("link", "link");
-
-  socket.on("request", async (data) => {
-    let products = await productManager.getProducts();
-    io.emit("products", products);
-  });
 });
 
-//MIDDLEWARE QUE DETECTA CUANDO SE REALIZA UNA SOLICITUD HTTP A LA APP.
-//Emite un llamado para volver a renderizar los productos.
-//Dado que la middleware se ejecuta antes que la solicitud HTTP, necesito demorar el renderizado hasta que se actualice la modificación en el arreglo de productos.
-app.use(function (req, res, next) {
-  io.emit("callBack", "link");
-  next();
-});
+//COOKIES
+app.use(cookieParser("HuPLX9thNhjbvrP"));
+
+//SESSIONS y STORAGE
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://hdominique:24Escherichia@hdominiquecluster.yb3kpy5.mongodb.net/?retryWrites=true&w=majority",
+      mongoOptions: {
+        useNewUrlParser: true,
+      },
+      ttl: 10000,
+    }),
+    secret: "HuPLX9thNhjbvrP",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+mongoose.connect(
+  "mongodb+srv://hdominique:24Escherichia@hdominiquecluster.yb3kpy5.mongodb.net/?retryWrites=true&w=majority"
+);
 
 //SET DE ENDPOINTS.
 app.use("/", viewsRouter);
@@ -75,7 +99,4 @@ app.use("/realtimeproducts", viewsRouter);
 app.use("/chats", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
-
-mongoose.connect(
-  "mongodb+srv://hdominique:24Escherichia@hdominiquecluster.yb3kpy5.mongodb.net/?retryWrites=true&w=majority"
-);
+app.use("/api/users", userRouter);

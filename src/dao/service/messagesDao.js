@@ -12,10 +12,6 @@ class MessageService {
   async addMessage(message) {
     return await this.model.create(message);
   }
-
-  async deleteMsj(uname) {
-    return await this.model.deleteMany({ user: uname });
-  }
 }
 
 export const messageService = new MessageService();

@@ -17,6 +17,7 @@ Swal.fire({
 });
 
 const inputMSJ = document.getElementById("msj");
+const buttonMsj = document.getElementById("buttonMsj");
 
 inputMSJ.addEventListener("keyup", (event) => {
   if (event.key === "Enter") {
@@ -28,8 +29,16 @@ inputMSJ.addEventListener("keyup", (event) => {
   }
 });
 
-function render(chat) {
-  const html = chat
+buttonMsj.addEventListener("click", (event) => {
+  let message = inputMSJ.value;
+  if (message.trim().length > 0) {
+    socket.emit("message", { user, message });
+    inputMSJ.value = "";
+  }
+});
+
+function render(data) {
+  const html = data
     .map((e, index) => {
       return `<div class="mt-1 bg-white rounded">
                     <strong>${e.user}</strong>
@@ -42,10 +51,6 @@ function render(chat) {
 }
 
 socket.on("messages", (data) => {
-  render(data);
-});
-
-socket.on("update", (data) => {
   render(data);
 });
 

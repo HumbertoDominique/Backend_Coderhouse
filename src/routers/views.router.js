@@ -1,27 +1,29 @@
 import { Router } from "express";
-import { messageService } from "../dao/service/messagesDao.js";
 import { productService } from "../dao/service/productsDao.js";
 import { cartService } from "../dao/service/cartsDao.js";
-import { io } from "../app.js";
+import { isAuth, isGuest } from "../middleware/auth.middleware.js";
+import { isUpdate } from "../middleware/realTimeProducts.middleware.js";
 
 //SET DEL ROUTER.
 
 const viewsRouter = Router();
 
-//PARA HANDLEBARS, SE IMPORTAN LOS PRODUCTOS Y SE ENVÍAN DIRECTAMENTE A LA VISTA HOME.
+//HANDLEBARS, SE IMPORTAN LOS PRODUCTOS Y SE ENVÍAN DIRECTAMENTE A LA VISTA HOME.
 
-viewsRouter.get("/", async (req, res) => {
+viewsRouter.get("/", isAuth, async (req, res) => {
   try {
     let data = await productService.getProducts();
-    res.render("home", data);
+    let { docs } = data;
+
+    res.render("products", { docs });
   } catch (err) {
     res.status(500).send({ err });
   }
 });
 
-//PARA WEBSOCKETS, SIMPLEMENTE SE RENDERIZA LA VISTA REALTIMEPRODUCTS ({}) DADO QUE LOS PRODUCTOS SERÁN ENVIADOS DESDE EL SOCKET.
+//WEBSOCKETS, SE RENDERIZA LA VISTA REALTIMEPRODUCTS ({}) DADO QUE LOS PRODUCTOS SON ENVIADOS DESDE EL SOCKET.
 
-viewsRouter.get("/realtimeproducts", async (req, res) => {
+viewsRouter.get("/realtimeproducts", isUpdate, async (req, res) => {
   try {
     res.render("realTimeProducts");
   } catch (err) {
@@ -30,18 +32,17 @@ viewsRouter.get("/realtimeproducts", async (req, res) => {
 });
 
 //ENDPOINT DEL CHAT
+
 viewsRouter.get("/chats", async (req, res) => {
   try {
-    io.on("connection", async(socket));
-    let chats = await messageService.getMessages();
-    res.render("chat", { chats });
+    res.render("chat");
   } catch (err) {
     res.status(500).send({ err });
   }
 });
 
 //ENDPOINT PARA VISUALIZAR LOS PRODUCTOS CON LAS DIFERENTES QUERYS Y FILTROS SOLICITADOS
-viewsRouter.get("/products", async (req, res) => {
+viewsRouter.get("/products", isAuth, async (req, res) => {
   try {
     const { limit, page, sort, category, availability } = req.query;
 
@@ -67,9 +68,17 @@ viewsRouter.get("/products", async (req, res) => {
 
     let carts = await cartService.getCarts();
     data.carts = carts;
-    res.render("products", data);
+
+    const { user } = req.session;
+    let isAdmin = false;
+    if (user.roll === "admin") {
+      isAdmin = true;
+    }
+
+    let { docs } = data;
+    res.render("products", { data, docs, user, isAdmin });
   } catch (err) {
-    res.status(500).send({ err });
+    res.status(500).send({ err: "Error de login" });
   }
 });
 
@@ -78,7 +87,12 @@ viewsRouter.get("/products", async (req, res) => {
 viewsRouter.get("/carts", async (req, res) => {
   try {
     let data = await cartService.getCarts();
-    res.render("carts", { data });
+    const { user } = req.session;
+    let isAdmin = false;
+    if (user.roll === "admin") {
+      isAdmin = true;
+    }
+    res.render("carts", { data, user, isAdmin });
   } catch (err) {
     res.status(500).send({ err });
   }
@@ -103,18 +117,23 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
 //VISTA INTERMEDIA QUE SE EJECUTA DESPUES DE AGREGAR UN PRODUCTO AL CARRITO DESDE LA VISTA DE PRODUCTOS.
 viewsRouter.post("/api/carts/:cid/products/:pid", async (req, res) => {
   try {
-    let cid = req.params.cid;
-    let pid = req.params.pid;
+    res.redirect("/products");
+  } catch (err) {
+    res.status(500).send({ err });
+  }
+});
 
-    await cartService.addProductToCart(cid, pid);
+viewsRouter.get("/register", isGuest, async (req, res) => {
+  try {
+    res.render("register");
+  } catch (err) {
+    res.status(500).send({ err });
+  }
+});
 
-    let data = await cartService.getCartById(cid);
-    let [conditionalRender] = data;
-    let render;
-    if (conditionalRender.products.length == 0) {
-      render = true;
-    }
-    res.render("cartById", { data, render });
+viewsRouter.get("/login", isGuest, async (req, res) => {
+  try {
+    res.render("login");
   } catch (err) {
     res.status(500).send({ err });
   }

@@ -1,0 +1,50 @@
+.bgBody {
+  background-image: linear-gradient(
+    to right bottom,
+    #f5f351,
+    #faea57,
+    #fee15f,
+    #ffd966,
+    #ffd16e,
+    #ffcc74,
+    #ffc77a,
+    #ffc280,
+    #ffbf86,
+    #ffbc8b,
+    #ffba91,
+    #ffb897
+  );
+}
+
+.register {
+  font-size: 0.8rem;
+}
+
+.bgLogin {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.bgNavbar {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.registerBox {
+  height: 21rem;
+  overflow: hidden;
+}
+
+.formBox {
+  margin-top: 0.38rem;
+}
+
+.adminBox {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.colorUno {
+  background-color: #f88f70;
+}
+
+.colorDos {
+  background-color: #f5f351;
+}

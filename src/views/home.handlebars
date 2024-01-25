@@ -6,6 +6,12 @@
     <h2>Renderizado de productos desde Handlebars.</h2>
     <div class="col">
       <h3>Productos:</h3>
+      <div>
+        <h1>{{user.firstName}}</h1>
+        <p>{{user.lastName}}</p>
+        <p>{{user.email}}</p>
+        <p>{{user.roll}}</p>
+      </div>
       <ol class="bg-warning rounded text-black">
         {{#each docs}}
           <li class="m-4">{{this.title}},
