@@ -1,6 +1,4 @@
 import { Router } from "express";
-import { userService } from "../dao/service/usersDao.js";
-import { createHash, isValidPassword } from "../utils.js";
 import passport from "passport";
 
 const userRouter = Router();
@@ -40,9 +38,10 @@ userRouter.post("/logout", (req, res) => {
     req.session.destroy();
     res.redirect("/login");
   } catch (err) {
-    res
-      .status(500)
-      .send({ status: "error", message: "Error en userRouter - User LogOut" });
+    res.status(500).send({
+      status: "error",
+      message: "Error en servidor para cierre de sesión",
+    });
   }
 });
 

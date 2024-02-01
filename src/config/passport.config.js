@@ -6,6 +6,8 @@ import { createHash, isValidPassword } from "../utils.js";
 
 const LocalStrategy = local.Strategy;
 
+//SET PASSPORT STRATEGY PARA REGISTER, LOGIN Y GITHUB
+
 const initializePassport = () => {
   passport.use(
     "register",
@@ -69,13 +71,12 @@ const initializePassport = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          console.log(profile); //CON ESTE CONSOLE LOG REVISO QUE ME ESTÁ TRAYENDO DE GITHUB Y PUDE NOTAR QUE NO TENGO EL EMAIL DEL PROFILE DEL USUARIO
-          let user = await userService.getUserByfirstName(profile.username); //ESTO ES UNA MEDIDA PROVISORIA PARA COMPROBAR EL FUNCIONAMIENTO DE LA AUTENTICACIÓN
+          let user = await userService.getUserByEmail(profile._json.email);
           if (!user) {
             let newUser = {
               firstName: profile.username,
               lastName: " ",
-              email: profile.username + "@gmail.com", //ESTA ES UNA MEDIDA PROVISORIA MIENTRAS ME TRAIGO EL EMAIL REAL
+              email: profile._json.email,
               password: " ",
               roll: "usuario Github",
             };
