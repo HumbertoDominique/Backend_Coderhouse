@@ -13,16 +13,17 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import { productService } from "./dao/service/productsDao.js";
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
+import { sessionRouter } from "./routers/sessions.router.js";
 
 //SET EXPRESS.
-
 const app = express();
 let productManager = new ProductManager();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //SET HANDLEBARS.
-
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
@@ -30,7 +31,6 @@ app.set("view engine", "handlebars");
 app.use(express.static(__dirname + "/public"));
 
 //SET SERVIDOR WEB EN PUERTO 8080
-
 const webServer = app.listen(8080, () => {
   console.log("Escuchando servidor web 8080");
 });
@@ -45,6 +45,7 @@ io.on("connection", async (socket) => {
   console.log("Conexión con WebSockets");
 
   //CONEXIÓN CON REAL TIME PRODUCTS
+
   socket.emit("link", "link");
 
   socket.on("request", async (data) => {
@@ -84,11 +85,17 @@ app.use(
       ttl: 10000,
     }),
     secret: "HuPLX9thNhjbvrP",
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
   })
 );
 
+//SET PASSPORT
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+//SET MONGODB
 mongoose.connect(
   "mongodb+srv://hdominique:24Escherichia@hdominiquecluster.yb3kpy5.mongodb.net/?retryWrites=true&w=majority"
 );
@@ -100,3 +107,4 @@ app.use("/chats", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/users", userRouter);
+app.use("/api/sessions", sessionRouter);

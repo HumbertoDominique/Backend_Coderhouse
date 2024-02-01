@@ -12,6 +12,10 @@ class UserService {
   async getUserByEmail(email) {
     return await this.model.findOne({ email: email });
   }
+
+  async getUserByfirstName(name) {
+    return await this.model.findOne({ firstName: name });
+  }
 }
 
 export const userService = new UserService();
