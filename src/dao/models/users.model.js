@@ -15,11 +15,18 @@ export const userSchema = new mongoose.Schema({
     unique: true,
     index: true,
   },
+  age: {
+    type: Number,
+  },
   password: {
     type: String,
     required: true,
   },
-  roll: {
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "carts",
+  },
+  role: {
     type: String,
     default: "usuario",
   },

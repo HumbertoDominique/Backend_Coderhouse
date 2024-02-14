@@ -14,7 +14,7 @@ const initializePassport = () => {
     new LocalStrategy(
       { passReqToCallback: true, usernameField: "email" },
       async (req, username, password, done) => {
-        const { firstName, lastName, email, roll } = req.body;
+        const { firstName, lastName, email, role, age } = req.body;
         try {
           let user = await userService.getUserByEmail(username);
           if (user) {
@@ -25,8 +25,9 @@ const initializePassport = () => {
             firstName,
             lastName,
             email,
+            age,
             password: createHash(password),
-            roll,
+            role,
           };
 
           let result = await userService.createUser(newUser);
@@ -78,13 +79,18 @@ const initializePassport = () => {
               lastName: " ",
               email: profile._json.email,
               password: " ",
-              roll: "usuario Github",
+              age: " ",
+              role: "usuario Github",
             };
 
             let result = await userService.createUser(newUser);
-            return done(null, result);
+            let { _doc } = result;
+            delete _doc.password;
+            return done(null, _doc);
           } else {
-            return done(null, user);
+            let { _doc } = user;
+            delete _doc.password;
+            return done(null, _doc);
           }
         } catch (err) {
           return done("Error al obtener el usuario:" + err);

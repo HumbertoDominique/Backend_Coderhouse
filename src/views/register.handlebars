@@ -24,14 +24,27 @@
           name="lastName"
         />
       </div>
-      <div class="mb-2 w-100">
-        <input
-          type="email"
-          class="form-control"
-          placeholder="Ingrese su Email"
-          aria-describedby="email"
-          name="email"
-        />
+      <div class="d-flex">
+        <div class="mb-2 w-50">
+          <input
+            type="email"
+            class="form-control"
+            placeholder="Ingrese su Email"
+            aria-describedby="email"
+            name="email"
+          />
+        </div>
+        <div class="mb-2 w-50 ms-3">
+          <input
+            type="number"
+            class="form-control"
+            placeholder="Ingrese su Edad"
+            aria-describedby="age"
+            name="age"
+            min="18"
+            max="100"
+          />
+        </div>
       </div>
       <div class="mb-2 w-100">
         <input

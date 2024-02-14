@@ -1,4 +1,5 @@
 import { userModel } from "../models/users.model.js";
+import { cartService } from "./cartsDao.js";
 
 class UserService {
   constructor() {
@@ -6,6 +7,8 @@ class UserService {
   }
 
   async createUser(userData) {
+    const userCart = await cartService.addNewCart({ products: [] });
+    userData.cart = userCart._id;
     return await this.model.create(userData);
   }
 

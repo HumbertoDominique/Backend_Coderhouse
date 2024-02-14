@@ -27,7 +27,9 @@ userRouter.post(
       firstName: req.user.firstName,
       lastName: req.user.lastName,
       email: req.user.email,
-      roll: req.user.roll,
+      role: req.user.role,
+      age: req.user.age,
+      cart: req.user.cart,
     };
     res.redirect("/products");
   }
