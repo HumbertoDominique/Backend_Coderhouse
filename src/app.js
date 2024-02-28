@@ -1,25 +1,24 @@
 import express from "express";
 import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
-import { productsRouter } from "./routers/products.router.js";
-import { cartRouter } from "./routers/cart.router.js";
-import { viewsRouter } from "./routers/views.router.js";
-import { userRouter } from "./routers/user.router.js";
-import ProductManager from "./dao/serviceFileSystem/productServiceFS.js";
-import { messageService } from "./dao/service/messagesDao.js";
+import { productsRouter } from "./products/products.router.js";
+import { cartRouter } from "./carts/carts.router.js";
+import { viewsRouter } from "./views/views.router.js";
+import { userRouter } from "./users/users.router.js";
+import { messageService } from "./messages/messages.dao.js";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import { productService } from "./dao/service/productsDao.js";
+import { productService } from "./products/products.dao.js";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
-import { sessionRouter } from "./routers/sessions.router.js";
+import { sessionRouter } from "./sessions/sessions.router.js";
+import config from "./config/config.js";
 
 //SET EXPRESS.
 const app = express();
-let productManager = new ProductManager();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -31,8 +30,8 @@ app.set("view engine", "handlebars");
 app.use(express.static(__dirname + "/public"));
 
 //SET SERVIDOR WEB EN PUERTO 8080
-const webServer = app.listen(8080, () => {
-  console.log("Escuchando servidor web 8080");
+const webServer = app.listen(config.port, () => {
+  console.log(`Escuchando servidor web ${config.port}`);
 });
 
 //SET SERVIDOR WEBSOCKETS
@@ -71,20 +70,17 @@ io.on("connection", async (socket) => {
 });
 
 //COOKIES
-app.use(cookieParser("HuPLX9thNhjbvrP"));
+app.use(cookieParser(config.cookieParser));
 
 //SESSIONS y STORAGE
 app.use(
   session({
     store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://hdominique:24Escherichia@hdominiquecluster.yb3kpy5.mongodb.net/?retryWrites=true&w=majority",
-      mongoOptions: {
-        useNewUrlParser: true,
-      },
+      mongoUrl: config.mongoUrl,
+
       ttl: 10000,
     }),
-    secret: "HuPLX9thNhjbvrP",
+    secret: config.cookieParser,
     resave: false,
     saveUninitialized: false,
   })
@@ -96,9 +92,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //SET MONGODB
-mongoose.connect(
-  "mongodb+srv://hdominique:24Escherichia@hdominiquecluster.yb3kpy5.mongodb.net/?retryWrites=true&w=majority"
-);
+mongoose.connect(config.mongoUrl);
 
 //SET DE ENDPOINTS.
 app.use("/", viewsRouter);

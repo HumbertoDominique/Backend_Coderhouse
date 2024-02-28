@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { productService } from "../dao/service/productsDao.js";
-import { cartService } from "../dao/service/cartsDao.js";
+import { productService } from "../products/products.dao.js";
+import { cartService } from "../carts/carts.dao.js";
 import { isAuth, isGuest } from "../middleware/auth.middleware.js";
 import { isUpdate } from "../middleware/realTimeProducts.middleware.js";
 
@@ -15,7 +15,7 @@ viewsRouter.get("/", isAuth, async (req, res) => {
     let data = await productService.getProducts();
     let { docs } = data;
 
-    res.render("home", { docs });
+    res.render("products", { docs });
   } catch (err) {
     res.status(500).send({ err });
   }
@@ -118,7 +118,7 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
 //VISTA INTERMEDIA QUE SE EJECUTA DESPUES DE AGREGAR UN PRODUCTO AL CARRITO DESDE LA VISTA DE PRODUCTOS.
 viewsRouter.post("/api/carts/:cid/products/:pid", async (req, res) => {
   try {
-    res.redirect("/products");
+    res.redirect("products");
   } catch (err) {
     res.status(500).send({ err });
   }

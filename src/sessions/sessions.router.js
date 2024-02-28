@@ -42,7 +42,9 @@ sessionRouter.get(
   passport.authenticate("github", { failureRedirect: "/login" }),
   async (req, res) => {
     req.session.user = req.user;
-    res.redirect("/products");
+    res.redirect(
+      "/products?limit=10&page=1&category=bebida&sort=desc&availability="
+    );
   }
 );
 
